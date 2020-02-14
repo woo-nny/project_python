@@ -8,9 +8,9 @@ import time
 class Snake:
     def __init__(self): # 뱀생성
         self.position = [[130,130]]
-        self.direction = "under" # 기본 
-    
-    def automove(self): # 시간의 흐름에 따른 기본적인 움직임과 마우스 클릭에 따른 움직임을 정해주는 함수
+        self.direction = "under" # 자동으로 움직이는 방향
+    # 시간의 흐름에 따른 기본적인 움직임과 마우스 클릭에 따른 움직임을 정해주는 함수
+    def automove(self):
         X, Y = self.position[0]
         if self.direction == "right":
             self.position = [[X+10,Y]] + self.position[:-1]
@@ -20,11 +20,32 @@ class Snake:
             self.position = [[X,Y+10]] + self.position[:-1]
         else :
             self.position = [[X,Y-10]] + self.position[:-1]
-    
+    # 마우스 클릭에 따라 어느 방향으로 얼마만큼 이동할지 판단해주는 함수.
+    def movement(self, a,b):
+        X, Y = self.position[0]
+        if a >= X and abs(a - X) >= abs(b - Y):
+            self.direction = "right"
+        elif a <= X and abs(a - X) >= abs(b - Y):
+            self.direction = "left"
+        elif b >= Y and  abs(a - X) <= abs(b - Y):
+            self.direction = "over"
+        elif b <= Y and abs(a - X) <= abs(b - Y):
+            self.direction = "under"
+    # 먹이를 먹어 커지는 경우
     def grow(self):
-        X,Y = self.position[-1]
-        self.position.append([X,Y])
-
+        if (feed.feed_X - 10 <= snake.position[0][0] <= feed.feed_X + 10 
+        and feed.feed_Y - 10 <= snake.position[0][1] <= feed.feed_Y + 10):
+            feed.change_position()
+            X,Y = self.position[-1]
+            if self.direction == "right":
+                self.position.append([X-10,Y])
+            elif self.direction == "left":
+                self.position.append([X+10,Y])
+            elif self.direction == "over":
+                self.position.append([X,Y-10])
+            else :
+                self.position.append([X,Y+10])
+    # 죽는 경우
     def die(self):
         if self.position[0] in self.position[1:] or (snake.position[0][0] < 100 or snake.position[0][0] > 350 
         or snake.position[0][1] < 100 or snake.position[0][1] > 350):
@@ -34,20 +55,21 @@ class Snake:
 
 class Feed:
     def __init__(self):
-        self.feed_X = feed_X
-        self.feed_Y = feed_Y
+        self.feed_X = random.randint(100,350)
+        self.feed_Y = random.randint(100,350)
+    def change_position(self):
+        self.feed_X = random.randint(100,350)
+        self.feed_Y = random.randint(100,350)
         
+class get_click:
+    def __init__(self):
+        self.X = 150
+        self.Y = 140
+    def getpoint(self):
+        a, b = pygame.mouse.get_pos()
+        self.X = a
+        self.Y = b
 
-# 마우스 클릭에 따라 어느 방향으로 얼마만큼 이동할지 판단해주는 함수.
-def movement(X,Y,a,b):
-    if a >= X and abs(a - X) >= abs(b - Y):
-        return "right"
-    elif a <= X and abs(a - X) >= abs(b - Y):
-        return "left"
-    elif b >= Y and  abs(a - X) <= abs(b - Y):
-        return "over"
-    elif b <= Y and abs(a - X) <= abs(b - Y):
-        return "under"
 
 
 
@@ -67,9 +89,8 @@ font = pygame.font.Font('freesansbold.ttf', 32)
 text = font.render('Game Over', True, green, blue)
 
 snake = Snake()
-feed_X = random.randint(100,350)
-feed_Y = random.randint(100,350)
-cha_direction = "under"
+feed = Feed()
+click = get_click()
 
 Interval = timedelta(seconds=10)
 lasttime = datetime.now()
@@ -77,7 +98,7 @@ sec = datetime.now()
 sec_interval = timedelta(seconds=1)
 
 
-
+pygame.K_PAUSE
 while snake.die() == None:  
     Change_Flag = False
     for event in pygame.event.get():
@@ -85,32 +106,25 @@ while snake.die() == None:
             pygame.quit()
             sys.exit()
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            a,b = pygame.mouse.get_pos()
-            cha_direction = movement(snake.position[0][0],snake.position[0][1],a,b)
+            click.getpoint()
             Change_Flag = True
     
 
     if Interval < datetime.now() - lasttime:
-        feed_X = random.randint(100,350)
-        feed_Y = random.randint(100,350)
+        feed.feed_X, feed.feed_Y = random.randint(100,350), random.randint(100,350)
         lasttime = datetime.now()
     if datetime.now() - sec > sec_interval or Change_Flag:
-        snake.direction = cha_direction
+        snake.movement(click.X,click.Y)
         snake.automove()
         sec = datetime.now()
-        
-    if feed_X - 10 <= snake.position[0][0] <= feed_X + 10 and feed_Y - 10 <= snake.position[0][1] <= feed_Y + 10:
-        feed_X = random.randint(100,350)
-        feed_Y = random.randint(100,350)
-        snake.grow()
+    snake.grow()
 
-    
 
     screen.fill(white)
     pygame.draw.lines(screen, red, True,[(100,100),(100,350),(350,350),(350,100)],5)
     for X,Y in snake.position:
         pygame.draw.rect(screen, green, [X,Y,10,10])
-    pygame.draw.rect(screen, black, [feed_X,feed_Y,10,10])
+    pygame.draw.rect(screen, black, [feed.feed_X,feed.feed_Y,10,10])
     snake.die()
     
             
