@@ -28,19 +28,18 @@ DIRECTION_ON_KEY = {
     pygame.K_RIGHT : 'east'
 }
 block_direction = 'east'
-
-
+game_over=True
 def draw_background(screen): #게임 배경 그린다
     background = pygame.Rect((0,0),(SCREEN_WIDTH,SCREEN_HEIGHT))
     pygame.draw.rect(screen,WHITE,background)
 def draw_block(screen,color,position): #position 위치에 color 색깔의 블록 그린다
     block = pygame.Rect((position[1]*BLOCK_SIZE,position[0]*BLOCK_SIZE),(BLOCK_SIZE,BLOCK_SIZE)) # y,x좌표
     pygame.draw.rect(screen,color,block)
-def printText(msg,color = 'BLACK', pos=(50,50)): #메시지 출력
-    textSurface = font.render(msg,True,pygame.Color(color),None)
-    textRect = textSurface.get_rect()
-    textRect.topleft = pos
-    screen.blit(textSurface,textRect)
+# def printText(msg): #메시지 출력
+#     textSurface = font.render(msg,True,BLACK,BLUE)
+#     textRect = textSurface.get_rect()
+#     textRect.center = (50,50)
+#     screen.blit(textSurface,textRect)
 class Snake: #뱀
     color = GREEN # 뱀 색
     def __init__(self):
@@ -60,6 +59,7 @@ class Snake: #뱀
             self.position = [(y, x - 1)] + self.position[:-1]
         elif self.direction == 'east': # 방향 오른쪽
             self.position = [(y, x + 1)] + self.position[:-1]
+        # print(self.position[0])
     def turn(self,direction):
         self.direction= direction
     def grow(self): # 먹이 먹을시
@@ -80,6 +80,7 @@ class food: # 먹이
     def draw(self,screen): #먹이 그림
         draw_block(screen,self.color,self.position)
 class GameBoard: # 게임판
+
     def __init__(self):
         self.Snake =Snake()
         self.food = food()
@@ -88,13 +89,16 @@ class GameBoard: # 게임판
         self.food.draw(screen)
     def process_turn(self): # 게임 한판
         self.Snake.move()
+        a,b=self.Snake.position[0]
         if self.Snake.position[0] == self.food.position: # 뱀 머리가 먹이 위치와 같을 경우
             self.Snake.grow()
             self.put_new_food()
-            return False
         if self.Snake.position[0] in self.Snake.position[1:]: #뱀 머리가 몸에 닫을 경우
-            return True
-        if self.Snake.position[0] not in 
+            game_over=True
+            return game_over
+        if a <= 0 or a >= 24 or b <= 0 or b >= 24: # 좌표 a,b 게임판을 벗어날 경우
+            game_over=True
+            return game_over
     def put_new_food(self): # 새로운 먹이 놓는 것
         self.food = food((random.randint(0,20),random.randint(0,20)))
         for position in self.Snake.position:
@@ -103,22 +107,26 @@ class GameBoard: # 게임판
                 break
 game = GameBoard()
 TURN_INTERVAL = timedelta(seconds=0.3)
-while not done: # 무한 반복
+while True: # 무한 반복
     clock.tick(60) # 프레임 10,30,60 적당 높을 수록 cpu 사용량 증가
     for event in pygame.event.get(): # 게임 이벤트 발생 여부 확인
         if event.type == pygame.KEYDOWN: # 키를 누르면 flag TURE
             if event.key in DIRECTION_ON_KEY:
                 game.Snake.turn(DIRECTION_ON_KEY[event.key])
         if event.type == pygame.QUIT: # 이벤트가 quit 클릭 시
-            done = True # 무한반복 나감
+            pygame.QUIT
     if TURN_INTERVAL < datetime.now() - last_turn_time:
-        done=game.process_turn()
-        last_turn_time = datetime.now()
-    draw_background(screen)
-    game.draw(screen)
-    pygame.display.update()
-pygame.QUIT
-
-
-
-
+        if game.process_turn():
+            text = font.render('Game Over', True, BLACK, BLUE)
+            textRect = text.get_rect()
+            textRect.center = (250,250)
+            screen.blit(text,textRect)
+            game.draw(screen)
+            pygame.display.flip()
+            time.sleep(2)
+            break
+        else:
+            last_turn_time = datetime.now()
+            draw_background(screen)
+            game.draw(screen)
+            pygame.display.flip()
