@@ -60,6 +60,7 @@ class Snake: #뱀
             self.position = [(y, x - 1)] + self.position[:-1]
         elif self.direction == 'east': # 방향 오른쪽
             self.position = [(y, x + 1)] + self.position[:-1]
+        # print(self.position[0])
     def turn(self,direction):
         self.direction= direction
     def grow(self): # 먹이 먹을시
@@ -88,13 +89,15 @@ class GameBoard: # 게임판
         self.food.draw(screen)
     def process_turn(self): # 게임 한판
         self.Snake.move()
+        a,b=self.Snake.position[0]
         if self.Snake.position[0] == self.food.position: # 뱀 머리가 먹이 위치와 같을 경우
             self.Snake.grow()
             self.put_new_food()
             return False
         if self.Snake.position[0] in self.Snake.position[1:]: #뱀 머리가 몸에 닫을 경우
             return True
-        if self.Snake.position[0] not in 
+        if a <= 0 or a >= 24 or b <= 0 or b >= 24: # 좌표 a,b 게임판을 벗어날 경우
+            return True
     def put_new_food(self): # 새로운 먹이 놓는 것
         self.food = food((random.randint(0,20),random.randint(0,20)))
         for position in self.Snake.position:
@@ -117,8 +120,6 @@ while not done: # 무한 반복
     draw_background(screen)
     game.draw(screen)
     pygame.display.update()
+printText("Game Over",BLACK,pos=(50,50))
 pygame.QUIT
-
-
-
 
