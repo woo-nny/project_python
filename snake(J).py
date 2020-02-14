@@ -130,6 +130,3 @@ while True: # 무한 반복
             draw_background(screen)
             game.draw(screen)
             pygame.display.flip()
-    
-
-
