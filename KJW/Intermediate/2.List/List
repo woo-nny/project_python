@@ -1,0 +1,37 @@
+# 2차 행렬 생성
+matrix = [[0 for col in range(10)] for row in range(10)]
+
+# 지그재그 순회
+
+for i in range(len(arr)):
+    for j in range(len(arr[0])):
+        arr[i][j+(m-1-2*j)*(i%2)]
+
+#전치 행렬
+zip(*martrix)
+
+#부분 집합
+arr = [3,6,7,1,5,4]
+
+for i in range(1<<n): #1<<n : 부분 집합의 개수
+    for j in range(n): #원소의 수 만큼 비트를 비교함
+        if i&(1<<j): # i의 j번째 비트가 1이면 j번째 원소 출력
+            print(arr[j],end =",")
+        print()
+
+#이진 검색
+
+def binarySearch(a,key):
+    start  = 0
+    end = len(a)-1
+
+    while start<=end:
+        middle = start +(end-start)//2
+        if key == a[middle]: #검색 성공
+         return True
+        elif key <a[middle]:
+            end = middle-1
+        else:
+            start =middle +1
+    return False #검색 실패
+    
