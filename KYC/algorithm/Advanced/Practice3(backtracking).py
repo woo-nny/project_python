@@ -1,6 +1,5 @@
 def search_MIN(now_min,X,Y,count,length):
     global MIN
-    
     if MIN <= now_min:
         return
     elif count == length*2 and MIN >= now_min:
