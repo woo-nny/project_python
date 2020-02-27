@@ -37,63 +37,63 @@ class Tree:
                 node.right = self._insert_value(node.right, data)
         return node
     # in_order_travalsal방식을 스택으로 구현(dfs방식)
-    def in_odrder_travalsal(self):
-        node = self.root
-        stack = [[node,False]] # boolean은 왼쪽방향을 진행했느냐 안했느냐를 표시
-        self.printall_stack(stack)
+    # def in_odrder_travalsal(self):
+    #     node = self.root
+    #     stack = [[node,False]] # boolean은 왼쪽방향을 진행했느냐 안했느냐를 표시
+    #     self.printall_stack(stack)
     
-    def printall_stack(self, stack):
-        if len(stack) == 0:
-            return
-        node, check = stack.pop(-1)
-        if check == False:
-            stack.append([node,True])
-            if node.left != None:
-                stack.append([node.left,False])
-            return self.printall_stack(stack)
-        else:
-            print(node.data)
-            if node.right != None:
-                stack.append([node.right,False])
-            return self.printall_stack(stack)
-    # pre_order를 큐를 이용해 구현
-    def pre_order_traversal(self,search_num):
-        self.search_num = search_num
-        self.count = 1
-        self.search_data = 0
-        node = self.root
-        que = queue.Queue()
-        que.put(node)
-        self.pre_order_search(que)
-        return self.search_data
+    # def printall_stack(self, stack):
+    #     if len(stack) == 0:
+    #         return
+    #     node, check = stack.pop(-1)
+    #     if check == False:
+    #         stack.append([node,True])
+    #         if node.left != None:
+    #             stack.append([node.left,False])
+    #         return self.printall_stack(stack)
+    #     else:
+    #         print(node.data)
+    #         if node.right != None:
+    #             stack.append([node.right,False])
+    #         return self.printall_stack(stack)
+    # # pre_order를 큐를 이용해 구현
+    # def pre_order_traversal(self,search_num):
+    #     self.search_num = search_num
+    #     self.count = 1
+    #     self.search_data = 0
+    #     node = self.root
+    #     que = queue.Queue()
+    #     que.put(node)
+    #     self.pre_order_search(que)
+    #     return self.search_data
         
     
-    def pre_order_search(self,que):
-        node = que.get()
-        if self.count == self.search_num:
-            self.search_data = node.data
-            return
-        else:
-            if node.left != None:
-                self.count +=1
-                que.put(node.left)
+    # def pre_order_search(self,que):
+    #     node = que.get()
+    #     if self.count == self.search_num:
+    #         self.search_data = node.data
+    #         return
+    #     else:
+    #         if node.left != None:
+    #             self.count +=1
+    #             que.put(node.left)
                 
-            if node.right != None:
-                self.count += 1
-                que.put(node.right)
+    #         if node.right != None:
+    #             self.count += 1
+    #             que.put(node.right)
                 
-            self.pre_order_search(que)
+    #         self.pre_order_search(que)
 
     #최초 참조코드
-    # def pre_order_traversal(self):
-    #     def _pre_order_traversal(root):
-    #         if root is None:
-    #             pass
-    #         else:
-    #             print(root.data)
-    #             _pre_order_traversal(root.left)
-    #             _pre_order_traversal(root.right)
-    #     _pre_order_traversal(self.root)
+    def pre_order_traversal(self): #self가 있으므로 클래스 객체의 메소드로서 작동하고,
+        def _pre_order_traversal(root): #self없이 메소드안에 있으므로 이 메소드 내에서만 동작하는 함수가된다.
+            if root is None:
+                pass
+            else:
+                print(root.data)
+                _pre_order_traversal(root.left)
+                _pre_order_traversal(root.right)
+        _pre_order_traversal(self.root)
 
 
 tree = tree()
