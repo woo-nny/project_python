@@ -1,7 +1,6 @@
 T = int(input())
 for t in range(1,T+1):
     N = int(input())
-    max = 0
     question = {}
     for i in range(N): # 최초 값을 받을때 부터 쓸모 있을 값만 받아서 검사 갯수를 줄인다.
         start, end = list(map(int, input().split()))
@@ -22,6 +21,4 @@ for t in range(1,T+1):
                     now_list.append([m_end,m_start])
         length = len(now_list)
         cnt += 1
-    if cnt > max:
-        max = cnt
-    print("#{} {}".format(t, max))
+    print("#{} {}".format(t, cnt))

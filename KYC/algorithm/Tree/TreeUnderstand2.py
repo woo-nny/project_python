@@ -46,3 +46,4 @@ if __name__ == "__main__":
     m_tree = Tree()
     for i in range(int(len(node)/2)):
         m_tree.makeRoot(node[i],node[i*2+1],node[i*2+2])
+    m_tree.inorderTraversal(m_tree.root)
